@@ -1,0 +1,32 @@
+args <- commandArgs(trailingOnly = TRUE)
+
+## Read Lines
+
+male <- read.table(args[1])
+male_sum <- sum(male[,2])
+male <- cbind(male, cumsum(male[,2]))
+male <- cbind(male, (male[,3]/male_sum)*100)
+
+female <- read.table(args[2])
+female_sum <- sum(female[,2])
+female <- cbind(female, cumsum(female[,2]))
+female <- cbind(female, (female[,3]/female_sum)*100)
+
+## make list of male,female, print list
+
+mylist <- list(male,female)
+
+## Make Graphs
+
+pdf("Number_of_distinct_kmers.pdf", width=8, height=8)
+plot(mylist[[1]][,1], mylist[[1]][,2], main="Number of distinct kmers", xlab="kmer frequency (copy number)", ylab="number of distinct kmers", xlim=c(0, 100), type="l", col="blue", ylim=c(0, 2000000))
+lines(mylist[[2]][,1], mylist[[2]][,2], col="red")
+legend(70, 2060000, c("CcapMale", "CcapFemale"), pch=c(95, 95), col=c("blue", "red"))
+dev.off()
+
+pdf("Cumulative_fraction_curves.pdf", width=8, height=8)
+plot(mylist[[1]][,1], mylist[[1]][,4], main="Cumulative fraction of kmers", xlab="kmer frequency", ylab="cumulative fraction of kmers", log="x", ylim=c(0,100), type="l", col="blue")
+lines(mylist[[2]][,1], mylist[[2]][,4], col="red")
+legend(1000, 8.4, c("CcapMale", "CcapFemale"), pch=c(95, 95), col=c("blue", "red"))
+dev.off()
+q()
